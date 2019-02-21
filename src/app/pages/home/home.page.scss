@@ -1,0 +1,42 @@
+
+  ion-content, ion-toolbar {
+    /*  --background: rgb(250, 97, 77);  61,159, 198 */
+    --background: rgb(7, 7, 7);
+    color: var(--ion-color-light);
+}
+
+h1 {
+    font-size:  30px;
+    margin-top: 20px;
+}
+
+.navbar-img {
+    height: 25px;
+    float: left;
+    margin-left: 7px;
+}
+  
+.logo-001 {
+    height: 250px;
+    margin-top:60px;
+    float: center;
+}        
+
+.logo-kinetik {
+    float: center;
+}
+
+.sistema1 {
+    margin-top:50px;
+    color: var(--ion-color-light);
+    font-size: 90%;
+    text-align: center;
+}
+
+.sistema2 {
+    margin-top:30px;
+    color: var(--ion-color-light);
+    font-size: 70%;
+    text-align: center;
+}
+

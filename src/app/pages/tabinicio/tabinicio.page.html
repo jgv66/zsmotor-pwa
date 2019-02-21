@@ -1,0 +1,78 @@
+
+<ion-header>
+
+    <app-expandheader [scrollArea]="scrollArea" style=" display: block; background-color: rgb(66, 203, 200); height: 150px; overflow: hidden; " >
+        <ion-row align-items-center>
+            <ion-col size="10">
+                <ion-list>
+                    <ion-item>
+                        <ion-label >Código => </ion-label>
+                        <ion-input type="text" name="codproducto" [(ngModel)]="codproducto" clearInput=true></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label >Descripción => </ion-label>
+                        <ion-input type="text" name="descripcion" [(ngModel)]="descripcion" clearInput=true></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf=" filtrosVarios ">
+                        <ion-label >Super Familias...</ion-label>
+                        <ion-select [(ngModel)]='codSuperFam' interface="alert"  multiple="true" placeholder="Seleccione una Super-familia...">
+                            <ion-select-option *ngFor="let sf of listaFamilias" [value]="sf.cod">{{ sf.descrip }}</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-list>
+            </ion-col>
+            <ion-col size="2">
+                <ion-button shape="round" color="danger" (click)="aBuscarProductos(codproducto,descripcion,codFamilias,1)"><ion-icon  slot="icon-only" name="search"></ion-icon></ion-button>
+            </ion-col>
+        </ion-row>
+    </app-expandheader>
+
+    <ion-toolbar>
+        <ion-img src="/assets/imgs/logo-zs.png" class="navbar-img"></ion-img>
+        <ion-buttons slot="start">
+            <ion-button (click)="ConfiguracionLocal()"                  ><ion-icon slot="icon-only" name="menu"  color="primary"></ion-icon></ion-button>
+        </ion-buttons>
+        <ion-title>Catálogo ZS</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="masOpciones()" *ngIf=" filtroFamilias "><ion-icon slot="icon-only" name="flash" ></ion-icon></ion-button>
+            <ion-button (click)="masOpciones()" *ngIf=" !filtroFamilias"><ion-icon slot="icon-only" name="flash" ></ion-icon></ion-button>
+            <ion-button (click)="cambiarDespliegue()"                   ><ion-icon slot="icon-only" [name]=" (tipoTarjeta)?'list-box':'filing' " ></ion-icon></ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+
+</ion-header>
+
+<ion-content #scrollArea fullscreen="true" [scrollEvents]="true" padding > 
+
+    
+    <app-cardprod *ngIf="  tipoTarjeta " [listaProductos]="listaProductos" [config]="config" [usuario]="usuario"></app-cardprod>
+    <app-listprod *ngIf=" !tipoTarjeta " [listaProductos]="listaProductos" [config]="config" [usuario]="usuario"></app-listprod>
+
+    <ion-infinite-scroll (ionInfinite)="masDatos($event)" *ngIf=" lScrollInfinito == true "  >
+        <ion-infinite-scroll-content loadingText="Buscando más datos..."></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+
+    
+</ion-content>
+
+
+<!--
+    <ion-item *ngIf=" cliente.codigo != '' ">
+        <table>
+            <tr>
+                <td text-right><p>Código Cliente :</p></td>
+                <td><p><b>{{ cliente.codigo }}</b></p></td>
+            </tr>
+            <tr *ngIf=" cliente.sucursal.trim() != '' ">
+                <td text-right><p>Sucursal :</p></td>
+                <td><p><b>{{ cliente.sucursal }}</b></p></td>
+            </tr>                
+            <tr>
+                <td text-right><p>Razon Social :</p></td>
+                <td><p><b>{{ cliente.razonsocial }}</b></p></td>
+            </tr>
+        </table>
+        <ion-button clear item-end icon-only (click)="limpiarCliente()"> <ion-icon name="close" color="primary"></ion-icon> </ion-button>
+    </ion-item>
+-->    
+
