@@ -1,6 +1,7 @@
-import { Component, OnInit, Renderer, ElementRef } from '@angular/core';
+import { Component, OnInit, Injectable } from '@angular/core';
 import { DatosService } from 'src/app/services/datos.service';
 import { FuncionesService } from 'src/app/services/funciones.service';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tabinicio',
@@ -48,8 +49,7 @@ export class TabinicioPage implements OnInit {
 
   constructor( private datos:     DatosService,
                private funciones: FuncionesService,
-               private renderer:  Renderer,
-               private element:   ElementRef ) {
+               private alertCtrl: AlertController ) {
     this.filtrosVarios      = false;
     this.codproducto        = '';
     this.descripcion        = '';
@@ -144,6 +144,88 @@ export class TabinicioPage implements OnInit {
 
   cambiarDespliegue() {
     this.tipoTarjeta = !this.tipoTarjeta;
+  }
+
+  cargaBodegas( producto ) {
+    this.funciones.cargaEspera();
+    this.datos.traeUnSP( 'ksp_BodegaProducto',
+                          { codproducto: producto.codigo, usuario: this.usuario, empresa: '01' },
+                          {codigo: this.usuario.KOFU, nombre: this.usuario.NOKOFU } )
+        .subscribe( data => { this.funciones.descargaEspera(); this.revisaEoFBP( producto, data ); },
+                    err  => { this.funciones.descargaEspera(); this.funciones.msgAlert( 'ATENCION', err );  }
+                  );
+  }
+
+  private revisaEoFBP( producto, data ) {
+    const rs    = data.recordset;
+    const largo = rs.length;
+    if ( rs === undefined || largo === 0 ) {
+      this.funciones.msgAlert('ATENCION',
+                              'Producto sin stock, sin asignación a bodegas o usted no tiene permiso para revisar todas las bodegas.');
+    } else if ( largo > 0 ) {
+      this.seleccionarBodega( producto, rs );
+    }
+  }
+
+  async seleccionarBodega( producto, bodegas ) {
+    if ( bodegas.length ) {
+        const bodconst: any = {};
+        //
+        bodegas.forEach( element => {
+          bodconst.push( { name: element.bodega,
+                           type: 'radio',
+                           label: 'Stock: ' + element.stock_ud1.toString() + ' [ ' + element.nombrebodega.trim() + ' ]' ,
+                           value: element });
+        });
+        //
+        const alert = await this.alertCtrl.create({
+          header: 'Bodegas con stock para : ' + producto.codigo,
+          inputs: bodconst,
+          buttons: [ {  text: 'Cancelar',
+                        role: 'cancel',
+                        cssClass: 'secondary',
+                        handler: () => { console.log('Confirm Cancel'); }
+                      },
+                      { text: 'Ok',
+                        handler: data => { this.cambiaListaProductos( data, producto, 1 ); }
+                      }
+                    ]} );
+
+        await alert.present();
+    } else {
+        this.funciones.msgAlert('ATENCION',
+                                'Producto sin stock o sin asignación a bodegas o sin permiso para revisar todas las bodegas.' );
+    }
+  }
+
+  cambiaListaProductos( data, producto, caso ) {
+    let i = 0;
+    if ( caso === 1 ) {
+      this.listaProductos.forEach( element => {
+        if ( this.listaProductos[i].codigo === producto.codigo ) {
+            producto.stock_ud1    = data.stock_ud1;
+            producto.bodega       = data.bodega;
+            producto.sucursal     = data.sucursal;
+            producto.nombrebodega = data.nombrebodega;
+            producto.apedir       = 1;
+        }
+        ++i;
+      });
+    } else if ( caso === 2 ) {
+      this.listaProductos.forEach( element => {
+        if ( this.listaProductos[i].codigo === producto.codigo ) {
+            producto.precio       = data.precio1;
+            producto.preciomayor  = data.preciomayor1;
+            producto.montolinea   = data.montolinea1;
+            producto.descuentomax = data.descuentomax1;
+            producto.dsctovalor   = data.dsctovalor1;
+            producto.tipolista    = data.tipolista;
+            producto.metodolista  = data.metodolista;
+            producto.listaprecio  = data.listaprecio;
+          };
+        ++i;
+      });
+    }
   }
 
 }

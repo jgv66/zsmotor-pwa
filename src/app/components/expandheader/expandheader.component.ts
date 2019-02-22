@@ -23,19 +23,24 @@ export class ExpandheaderComponent implements OnInit {
   }
 
   resizeHeader( ev ) {
-      //console.log( ev.scrollTop );
-      console.log(this.element);
-
-      for ( const h of this.element.nativeElement.children ) {
-        console.log( h.offsetTop );
-        console.log( h.clientHeight );
-      }
+      /// console.log( ev.scrollTop );
+      // console.log(this.element);
 
       this.newheaderHeight = this.headerHeight - ev.scrollTop;
       if ( this.newheaderHeight < 0 ) {
         this.newheaderHeight = 0;
       }
       this.renderer.setElementStyle( this.element.nativeElement, 'height', this.newheaderHeight + 'px' );
+      /*
+      for ( const hE of this.element.nativeElement.children ) {
+        const totlaHeight = hE.offsetTop + hE.clientHeight ;
+        if ( totlaHeight > this.headerHeight ) {
+          this.renderer.setElementStyle( hE, 'opacity', '0' );
+        } else {
+          this.renderer.setElementStyle( hE, 'opacity', '1' );
+        }
+      }
+      */
   }
 
 }

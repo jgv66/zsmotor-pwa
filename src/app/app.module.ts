@@ -26,7 +26,7 @@ import { ComponentsModule } from './components/components.module';
     StatusBar,
     SplashScreen,
     DatosService,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
   ],
   bootstrap: [AppComponent]
 })

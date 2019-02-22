@@ -114,7 +114,7 @@ export class DatosService {
     });
   }
 
-  async readDatoLocal(token: any) {
+  async readDatoLocal(token: any): Promise<any> {
     this.getSectionData( token )
         .then( data => {
                          return data;

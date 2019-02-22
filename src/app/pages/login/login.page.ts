@@ -32,8 +32,8 @@ export class LoginPage implements OnInit {
     this.datos.readDatoLocal( 'ktp_ultimo_usuario' )
         .then( pUsuario => {
           try {
-                this.rutocorreo = pUsuario.EMAIL.trim();
-                this.clave      = pUsuario.RTFU.trim();
+                this.rutocorreo = pUsuario.EMAIL; 
+                this.clave      = pUsuario.RTFU;
                 this.clave      = this.clave.slice( 0, 5 );
             } catch (error) {
               this.rutocorreo = '';
